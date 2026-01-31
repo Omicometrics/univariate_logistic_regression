@@ -6,6 +6,30 @@ from libc.math cimport exp, sqrt, isnan
 @cython.boundscheck(False)
 @cython.cdivision(True)
 def logistic_regression(float[::1] x, int[::1] y, double a0, double b0):
+    """
+    Logistic regression using iterative re-weighted least squares. This
+    is only for univariate case:
+        p(y=0) = 1 / (1 + exp(a + b * x))
+
+    To reduce the bias in MLE due to separation of samples, Firth's
+    procedure is applied.
+
+    Args:
+        x: x
+        y: y
+        a0: initial guess of the slop, defaulted to 0.
+        b0: initial guess of the intercept, defaulted to 0.
+
+    Returns:
+        a and b
+
+    References:
+    [1] Firth D. Bias Reduction of Maximum Likelihood Estimates.
+        Biometrika. 1993, 80(1), 27-38.
+    [2] Heinze G., Schemper M. A solution to the problem of separation
+        in logistic regression. Statist Med. 2002, 21, 2409-2419.
+
+    """
 
     cdef:
         Py_ssize_t n = x.shape[0]
