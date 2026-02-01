@@ -1,7 +1,7 @@
 # Univariate Logistic Regression
 `Cython` codes for univariate logistic regression. The slope $b$ and  intercept $a$ of the log odd function:
 
-$$ log({p(y=0| \mathbf{x} ) \over p(y=1| \mathbf{x} )}) = a + b \mathbf{x} $$
+$$ ln\Big({p(y=0| \mathbf{x} ) \over p(y=1| \mathbf{x} )}\Big) = a + b \mathbf{x} $$
 
 are estimated using iterative reweighted least squares (IRLS). To reduce the bias generated during the maximum likelihood estimation (MLE) of the parameters, Firth's approach<sup>[1, 2]</sup> is used.
 
@@ -9,8 +9,8 @@ Since only a single variable is used this logistic regression, the implementatio
 ## Usage
 ```a, b = logistic_regression(x, y, a0, b0)```
 
-* `x`: A vector of length `n`.
-* `y`: A vector of length `n`, each element $y_i\in {\\{0, 1}\\}$
+* `x`: A vector **$\mathbf{x}$** of length `n`.
+* `y`: A vector **$\mathbf{y}$** of length `n`, $y_i\in {\\{0, 1}\\} \text{ for } i = 1, 2, ..., n$.
 * `a0`: Initial guess of the slop $a$, could be `0` or `1`.
 * `b0`: Initial guess of the intercept $b$, could be `0` or `1`.
 
