@@ -10,7 +10,7 @@ Since only a single variable is used this logistic regression, the implementatio
 ```a, b = logistic_regression(x, y, a0, b0)```
 
 * `x`: A vector of length `n`.
-* `y`: A vector of length `n`, each element $y_i\in \{0, 1\}$
+* `y`: A vector of length `n`, each element $y_i\in {\\{0, 1}\\}$
 * `a0`: Initial guess of the slop $a$, could be `0` or `1`.
 * `b0`: Initial guess of the intercept $b$, could be `0` or `1`.
 
