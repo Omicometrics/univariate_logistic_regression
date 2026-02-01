@@ -3,7 +3,7 @@
 
 $$ ln\Big({p(y=0| \mathbf{x} ) \over p(y=1| \mathbf{x} )}\Big) = a + b \mathbf{x} $$
 
-are estimated using iterative reweighted least squares (IRLS). To reduce the bias generated during the maximum likelihood estimation (MLE) of the parameters, Firth's approach<sup>[1, 2]</sup> is used.
+are estimated using iterative reweighted least squares (IRLS). To reduce the bias generated during the maximum likelihood estimation (MLE) of the parameters for separation data, Firth's approach<sup>[1, 2]</sup> is used.
 
 Since only a single variable is used this logistic regression, the implementation is largely simplified as the inverse of Hessian matrix (size of 2 by 2) can be solved numerically.
 ## Usage
