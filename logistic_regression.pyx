@@ -1,6 +1,49 @@
 cimport cython
 from libc.stdlib cimport malloc, free
-from libc.math cimport exp, sqrt, isnan
+from libc.math cimport sqrt, isnan, floor
+
+cdef:
+    double COEFF_LOG2E = 1.442695040888963
+    double COEFF_P4_A = -3.70239070165e-06
+    double COEFF_P4_B = 0.307033839653000
+    double COEFF_P4_C = -0.241638340487000
+    double COEFF_P4_D = -0.051690438287400
+    double COEFF_P4_E = -0.013697656096900
+    double * POW2_INTS = <double *> malloc(63 * sizeof(double))
+    Py_ssize_t i
+
+with cython.boundscheck(False), cython.wraparound(False), cython.cdivision(True):
+    for i in range(31):
+        POW2_INTS[i] = 1. / <double> (1 << (31 - i))
+    for i in range(31, 63):
+        POW2_INTS[i] = <double> (1 << (i - 31))
+
+
+@cython.wraparound(False)
+@cython.boundscheck(False)
+cdef double _expFast(double x):
+    """
+    Fast approximation of exp(x) using a 4th degree polynomial.
+
+    References:
+        Malossi ACI, Ineichen Y, Bekas C, Curioni A. Fast Exponential
+        Computation on SIMD Architectures. HiPEAC-1st Workshop On
+        Approximate Computing (WAPCO)At: Amsterdam (NL). 2015.
+
+    """
+    cdef:
+        double xf, kf, lx
+        ssize_t xi
+
+    x *= COEFF_LOG2E
+    lx = floor(x)
+    xi = <ssize_t> (lx + 31.)
+    xf = x - lx
+    kf = (COEFF_P4_A + xf * (COEFF_P4_B + xf * (COEFF_P4_C + xf *
+          (COEFF_P4_D + xf * COEFF_P4_E))))
+
+    return POW2_INTS[xi] * (1. + xf - kf)
+
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
@@ -63,7 +106,7 @@ def logistic_regression(float[::1] x, int[::1] y, double a0, double b0):
                     ta += 1.
                     tb += x[i]
                 else:
-                    p = 1. / (1. + exp(q))
+                    p = 1. / (1. + _expFast(q))
                     w = p * (1. - p)
                     wx1 = w * x[i]
                     wx2 = w * x_sq[i]
@@ -93,6 +136,7 @@ def logistic_regression(float[::1] x, int[::1] y, double a0, double b0):
 
         if isnan(a):
             a, b, d = 1., 1., 1.
+            it = 0
 
         it += 1
 
